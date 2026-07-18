@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fraud & Currency Demo</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: #f5f7fb;
+        color: #1f2937;
+      }
+      .container {
+        max-width: 960px;
+        margin: 32px auto;
+        padding: 24px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      }
+      h1, h2 { margin-top: 0; }
+      .grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+      .card { padding: 16px; border: 1px solid #e5e7eb; border-radius: 12px; background: #fbfdff; }
+      textarea, select, button, input[type="file"] {
+        width: 100%; box-sizing: border-box; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 15px;
+      }
+      button { background: #2563eb; color: white; border: none; cursor: pointer; }
+      button:hover { background: #1d4ed8; }
+      button:disabled { opacity: 0.7; cursor: wait; }
+      .result, .status { margin-top: 12px; padding: 12px; background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px; white-space: pre-wrap; }
+      .status { color: #4b5563; }
+      video, img { width: 100%; max-height: 320px; border-radius: 10px; background: #111827; object-fit: cover; }
+      .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+      .actions button { flex: 1; min-width: 140px; }
+      .live-pill { display: inline-block; margin-top: 10px; padding: 6px 10px; border-radius: 999px; background: #dcfce7; color: #166534; font-size: 13px; font-weight: 600; }
+      .tracking-pill { display: inline-block; margin-top: 8px; padding: 6px 10px; border-radius: 999px; background: #e0f2fe; color: #075985; font-size: 13px; font-weight: 600; }
+      .video-shell {
+        position: relative;
+        width: 100%;
+        padding-top: 56.25%;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        background: #111827;
+        overflow: hidden;
+      }
+      .video-shell video, .video-shell canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        object-fit: cover;
+        display: block;
+      }
+      .video-shell video {
+        z-index: 1;
+        background: transparent;
+      }
+      .video-shell canvas {
+        z-index: 2;
+        background: transparent;
+        pointer-events: none;
+      }
+      .video-shell::after {
+        content: attr(data-state);
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(17, 24, 39, 0.8);
+        color: white;
+        font-size: 13px;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Fraud & Currency Detection Demo</h1>
+      <p>Use the scam-message analysis below, or check currency authenticity with either an uploaded image or your webcam.</p>
+
+      <div class="grid">
+        <div class="card">
+          <h2>Scam Message Analysis</h2>
+          <form id="analysisForm">
+            <label for="message">Message</label>
+            <textarea id="message" rows="7" placeholder="Example: This is CBI officer speaking..."></textarea>
+            <label for="channel">Channel</label>
+            <select id="channel">
+              <option value="sms">SMS</option>
+              <option value="whatsapp">WhatsApp</option>
+              <option value="email">Email</option>
+              <option value="other">Other</option>
+            </select>
+            <button type="submit">Analyze</button>
+          </form>
+          <div id="status" class="status">Ready.</div>
+          <div id="result" class="result">No analysis yet.</div>
+        </div>
+
+        <div class="card">
+          <h2>Currency Authenticity Check</h2>
+          <div class="actions">
+            <button id="startCameraBtn" type="button">Open Camera</button>
+            <button id="stopCameraBtn" type="button">Stop Camera</button>
+          </div>
+          <div class="video-shell" id="videoShell" data-state="Waiting for note">
+            <video id="video" autoplay playsinline muted></video>
+            <canvas id="overlayCanvas"></canvas>
+          </div>
+          <div id="liveState" class="live-pill">Live mode: off</div>
+          <div id="trackingState" class="tracking-pill">Tracking note: waiting</div>
+          <input id="currencyFile" type="file" accept="image/png,image/jpeg" />
+          <button id="analyzeImageBtn" type="button">Analyze Uploaded Image</button>
+          <div id="currencyStatus" class="status">Open the camera to begin live detection, or upload an image.</div>
+          <div id="currencyResult" class="result">No currency analysis yet.</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById('analysisForm');
+      const status = document.getElementById('status');
+      const result = document.getElementById('result');
+      const currencyStatus = document.getElementById('currencyStatus');
+      const currencyResult = document.getElementById('currencyResult');
+      const currencyFile = document.getElementById('currencyFile');
+      const analyzeImageBtn = document.getElementById('analyzeImageBtn');
+      const video = document.getElementById('video');
+      const startCameraBtn = document.getElementById('startCameraBtn');
+      const stopCameraBtn = document.getElementById('stopCameraBtn');
+      const liveState = document.getElementById('liveState');
+      const trackingState = document.getElementById('trackingState');
+      const videoShell = document.getElementById('videoShell');
+      const overlayCanvas = document.getElementById('overlayCanvas');
+      const overlayCtx = overlayCanvas.getContext('2d');
+      let stream = null;
+      let currentImage = null;
+      let liveLoopActive = false;
+      let lastFrameTime = 0;
+      let frameCount = 0;
+      let inferenceInFlight = false;
+      let lastPrediction = 'Waiting';
+      let lastConfidence = 0.0;
+      let lastGoodResult = null;
+      let inferenceTimer = null;
+      let lastDisplayedBox = null;
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const text = document.getElementById('message').value.trim();
+        const channel = document.getElementById('channel').value;
+
+        if (!text) {
+          status.textContent = 'Please enter a message.';
+          result.textContent = 'No analysis yet.';
+          return;
+        }
+
+        status.textContent = 'Analyzing...';
+        result.textContent = 'Working...';
+
+        try {
+          const response = await fetch('/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, channel })
+          });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.detail || 'Request failed');
+          result.textContent = JSON.stringify(data, null, 2);
+          status.textContent = 'Analysis complete.';
+        } catch (error) {
+          status.textContent = 'Error.';
+          result.textContent = error.message;
+        }
+      });
+
+      function resizeOverlay() {
+        if (!video.videoWidth || !video.videoHeight) {
+          overlayCanvas.width = 640;
+          overlayCanvas.height = 480;
+          overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+          return;
+        }
+        overlayCanvas.width = video.videoWidth;
+        overlayCanvas.height = video.videoHeight;
+        overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+      }
+
+      async function openCamera() {
+        if (stream) return;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
+            audio: false
+          });
+          video.srcObject = stream;
+          video.playsInline = true;
+          video.muted = true;
+          video.style.display = 'block';
+          video.addEventListener('loadedmetadata', () => {
+            resizeOverlay();
+          }, { once: true });
+          await video.play();
+          resizeOverlay();
+          liveState.textContent = 'Live mode: on';
+          trackingState.textContent = 'Tracking note: waiting';
+          videoShell.dataset.state = 'Tracking note';
+          currencyStatus.textContent = 'Camera ready. Live detection is running.';
+          if (!liveLoopActive) {
+            liveLoopActive = true;
+            inferenceTimer = setInterval(() => {
+              if (!inferenceInFlight) {
+                processLiveFrame(Date.now());
+              }
+            }, 800);
+          }
+        } catch (error) {
+          currencyStatus.textContent = 'Camera access was denied or unavailable.';
+          currencyResult.textContent = error.message;
+        }
+      }
+
+      function stopCamera() {
+        liveLoopActive = false;
+        if (inferenceTimer) {
+          clearInterval(inferenceTimer);
+          inferenceTimer = null;
+        }
+        if (stream) {
+          stream.getTracks().forEach((track) => track.stop());
+          stream = null;
+        }
+        video.srcObject = null;
+        video.style.display = 'none';
+        liveState.textContent = 'Live mode: off';
+        overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+        trackingState.textContent = 'Tracking note: stopped';
+        videoShell.dataset.state = 'Camera off';
+      }
+
+      function drawTrackingBox(bbox, label = null, confidence = null) {
+        overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+        const activeBox = bbox || lastDisplayedBox;
+        if (!activeBox) return;
+
+        lastDisplayedBox = activeBox;
+        const scaleX = overlayCanvas.width / (video.videoWidth || 1);
+        const scaleY = overlayCanvas.height / (video.videoHeight || 1);
+        const x = activeBox[0] * scaleX;
+        const y = activeBox[1] * scaleY;
+        const w = activeBox[2] * scaleX;
+        const h = activeBox[3] * scaleY;
+
+        overlayCtx.strokeStyle = label === 'FAKE' ? '#ef4444' : label === 'REAL' ? '#22c55e' : '#60a5fa';
+        overlayCtx.lineWidth = 3;
+        overlayCtx.strokeRect(x, y, w, h);
+        overlayCtx.beginPath();
+        overlayCtx.moveTo(x, y + 16);
+        overlayCtx.lineTo(x, y);
+        overlayCtx.lineTo(x + 16, y);
+        overlayCtx.moveTo(x + w - 16, y);
+        overlayCtx.lineTo(x + w, y);
+        overlayCtx.lineTo(x + w, y + 16);
+        overlayCtx.moveTo(x, y + h - 16);
+        overlayCtx.lineTo(x, y + h);
+        overlayCtx.lineTo(x + 16, y + h);
+        overlayCtx.moveTo(x + w - 16, y + h);
+        overlayCtx.lineTo(x + w, y + h);
+        overlayCtx.lineTo(x + w, y + h - 16);
+        overlayCtx.stroke();
+
+        if (label) {
+          const text = `${label}${confidence != null ? ` • ${confidence.toFixed(1)}%` : ''}`;
+          overlayCtx.font = 'bold 22px Arial';
+          overlayCtx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+          overlayCtx.strokeStyle = 'rgba(255,255,255,0.9)';
+          overlayCtx.lineWidth = 8;
+          overlayCtx.strokeText(text, Math.max(12, x), Math.max(28, y - 8));
+          overlayCtx.fillText(text, Math.max(12, x), Math.max(28, y - 8));
+        }
+      }
+
+      async function analyzeUploadedImage() {
+        const file = currencyFile.files[0];
+        if (!file) {
+          currencyStatus.textContent = 'Please choose an image first.';
+          currencyResult.textContent = 'No image selected.';
+          return;
+        }
+
+        currencyStatus.textContent = 'Analyzing uploaded image...';
+        currencyResult.textContent = 'Working...';
+
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          const response = await fetch('/predict/currency', { method: 'POST', body: formData });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.detail || 'Image analysis failed');
+
+          const real = (data.real_probability * 100).toFixed(2);
+          const fake = (data.fake_probability * 100).toFixed(2);
+          drawTrackingBox(data.bbox || null, data.currency_status === 'NO NOTE' ? null : data.currency_status, data.confidence_percentage);
+
+          if (data.currency_status !== 'NO NOTE') {
+            currencyResult.textContent = [
+              `Verdict: ${data.currency_status}`,
+              `Confidence: ${data.confidence_percentage.toFixed(2)}%`,
+              `Authentic probability: ${real}%`,
+              `Counterfeit probability: ${fake}%`,
+              `Recommendation: ${data.recommendation}`
+            ].join('\n');
+            trackingState.textContent = `Tracking note: ${data.currency_status}`;
+            videoShell.dataset.state = `Uploaded ${data.currency_status}`;
+          } else {
+            currencyResult.textContent = 'No note detected. Try a clearer image with the note visible.';
+            trackingState.textContent = 'Tracking note: waiting';
+            videoShell.dataset.state = 'Waiting for note';
+          }
+          currencyStatus.textContent = 'Uploaded image analyzed.';
+        } catch (error) {
+          currencyStatus.textContent = 'Image analysis failed.';
+          currencyResult.textContent = error.message;
+        }
+      }
+
+      async function processLiveFrame(timestamp) {
+        if (!liveLoopActive || !stream || !video.videoWidth) {
+          return;
+        }
+        if (inferenceInFlight) {
+          return;
+        }
+
+        frameCount += 1;
+        const elapsed = timestamp - lastFrameTime;
+        if (elapsed >= 1000) {
+          const fps = (frameCount * 1000) / elapsed;
+          lastFrameTime = timestamp;
+          frameCount = 0;
+          currencyStatus.textContent = `Camera ready. Live detection running • ${fps.toFixed(1)} FPS`;
+        }
+
+        inferenceInFlight = true;
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = video.videoWidth || 640;
+          canvas.height = video.videoHeight || 480;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.85));
+          if (!blob) throw new Error('Unable to capture frame');
+
+          const formData = new FormData();
+          formData.append('file', blob, 'live-frame.jpg');
+          const response = await fetch('/predict/currency/live', { method: 'POST', body: formData });
+          const data = await response.json();
+          if (!response.ok || data.status !== 'success') throw new Error(data.detail || data.message || 'Currency check failed');
+
+          const real = (data.real_probability * 100).toFixed(2);
+          const fake = (data.fake_probability * 100).toFixed(2);
+          drawTrackingBox(data.bbox || null, data.currency_status === 'NO NOTE' ? null : data.currency_status, data.confidence_percentage);
+
+          if (data.currency_status !== 'NO NOTE') {
+            lastGoodResult = [
+              `Verdict: ${data.currency_status}`,
+              `Confidence: ${data.confidence_percentage.toFixed(2)}%`,
+              `Authentic probability: ${real}%`,
+              `Counterfeit probability: ${fake}%`,
+              `Recommendation: ${data.recommendation}`
+            ].join('\n');
+            currencyResult.textContent = lastGoodResult;
+            trackingState.textContent = `Tracking note: ${data.currency_status}`;
+            videoShell.dataset.state = `Tracking ${data.currency_status}`;
+          } else if (lastGoodResult) {
+            currencyResult.textContent = `${lastGoodResult}\n\nNo note detected in the latest frame. Keeping the last stable result.`;
+            trackingState.textContent = 'Tracking note: holding last result';
+            videoShell.dataset.state = 'Holding last result';
+          } else {
+            currencyResult.textContent = 'No note detected. Move the note closer to the camera and keep it fully visible.';
+            trackingState.textContent = 'Tracking note: waiting';
+            videoShell.dataset.state = 'Waiting for note';
+          }
+        } catch (error) {
+          currencyResult.textContent = error.message;
+        } finally {
+          inferenceInFlight = false;
+        }
+      }
+
+      startCameraBtn.addEventListener('click', async () => {
+        await openCamera();
+      });
+
+      stopCameraBtn.addEventListener('click', () => {
+        stopCamera();
+      });
+
+      analyzeImageBtn.addEventListener('click', async () => {
+        await analyzeUploadedImage();
+      });
+
+      window.addEventListener('beforeunload', stopCamera);
+    </script>
+  </body>
+</html>

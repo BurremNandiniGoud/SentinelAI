@@ -1,0 +1,46 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# Models
+*.pt
+*.pth
+*.onnx
+*.h5
+*.keras
+*.ckpt
+*.pb
+*.tflite
+*.joblib
+*.pkl
+
+# Artifacts
+artifacts/
+app/currency_detection/artifacts/
+
+# Datasets
+dataset/
+datasets/
+data/
+
+# Training
+checkpoints/
+runs/
+logs/
+
+# Build
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
