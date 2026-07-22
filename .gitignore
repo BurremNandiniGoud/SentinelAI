@@ -1,46 +1,72 @@
-# Python
+# Python environments
 .venv/
 venv/
+env/
+ENV/
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+*$py.class
 
-# Environment
+# Python tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# Environment / secrets
 .env
+.env.*
+*.env
 
-# Models
+# Logs and temporary output
+logs/
+*.log
+tmp/
+temp/
+
+# Build and frontend artifacts
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.vite/
+build/
+dist/
+*.tsbuildinfo
+
+# Local databases and uploads
+*.sqlite3
+*.db
+uploads/
+
+# Editor / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Ignore large or generated training data, but keep the small sample dataset
+data/*
+!data/
+!data/sample_dataset.csv
+
+# Keep essential model and runtime assets
+!app/currency_detection/artifacts/
+!app/currency_detection/artifacts/*.h5
+!app/ml/artifacts/
+!app/ml/artifacts/fraud_model.joblib
+!model.json
+!group1-shard*.bin
+
+# Ignore heavyweight model formats unless they are explicitly required
 *.pt
 *.pth
 *.onnx
-*.h5
 *.keras
 *.ckpt
 *.pb
 *.tflite
-*.joblib
 *.pkl
-
-# Artifacts
-artifacts/
-app/currency_detection/artifacts/
-
-# Datasets
-dataset/
-datasets/
-data/
-
-# Training
-checkpoints/
-runs/
-logs/
-
-# Build
-dist/
-build/
-
-# IDE
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-Thumbs.db

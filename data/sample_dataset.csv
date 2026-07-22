@@ -1,0 +1,118 @@
+message,label,category
+"This is CBI officer speaking. A digital arrest warrant has been issued against you. Do not disconnect the call.",1,digital_arrest
+"Your Aadhaar card is linked to illegal parcel containing drugs and fake passports. Transfer money immediately to avoid arrest.",1,digital_arrest
+"Police investigation is underway against your mobile number. Cooperate immediately or face legal consequences.",1,digital_arrest
+"This is cyber crime cell Mumbai. Your number is used in an illegal SIM card racket. Share your details now.",1,cyber_crime_scam
+"Cyber Crime Cell has traced suspicious activity to your SIM card. Call back immediately to avoid FIR.",1,cyber_crime_scam
+"Your phone number is linked to financial fraud. Report immediately or face arrest warrant.",1,cyber_crime_scam
+"Dear customer your bank account will be frozen in 30 minutes. Share OTP now to verify KYC.",1,kyc_scam
+"Your bank KYC has expired. Share OTP 573209 to reactivate your account immediately.",1,kyc_scam
+"Complete KYC within 30 minutes or your account will be frozen permanently. Click the link.",1,kyc_scam
+"Verify your PAN and Aadhaar by clicking the attached link. Failure to verify will block your account.",1,kyc_scam
+"Congratulations! You have won a lottery of 25 lakh rupees. Pay processing fee to claim your prize.",1,lottery_scam
+"You have been selected for an international lottery draw. Verify your bank account to receive funds.",1,lottery_scam
+"Congratulations! You won Rs 75000 in the Google Pay lucky draw. Pay registration fee to claim.",1,lottery_scam
+"This is income tax department. There is a case registered against you for money laundering. Do not tell anyone.",1,income_tax_scam
+"A tax penalty of Rs 15000 has been issued against your PAN. Pay now to avoid legal action.",1,income_tax_scam
+"Install AnyDesk on your phone so we can verify your bank account remotely and prevent fraud.",1,remote_access_scam
+"Download TeamViewer immediately for secure verification of your compromised account.",1,remote_access_scam
+"Install this remote support app so our technical team can remove the virus from your device.",1,remote_access_scam
+"Scan this QR code to receive your refund of Rs 5000 immediately or your account gets suspended.",1,qr_scam
+"Refund pending for your recent transaction. Scan QR code to credit Rs 2500 to your account now.",1,qr_scam
+"Scan this QR code to activate your cashback reward of Rs 10000. Limited time offer.",1,qr_scam
+"We are from courier company FedEx. Your parcel contains illegal items. Contact customs department now.",1,courier_scam
+"FedEx parcel contains prohibited items. Contact customs immediately to avoid legal trouble.",1,courier_scam
+"BlueDart courier held at Mumbai customs. Pay clearance fee of Rs 2999 to release your shipment.",1,courier_scam
+"Job offer: earn Rs 5000 daily by just liking youtube videos. Register now with small joining fee.",1,job_scam
+"Work from home opportunity! Earn Rs 30000 per month typing documents. Pay registration fee to start.",1,job_scam
+"Part-time online data entry job available. No experience needed. Pay training fee of Rs 999 to join.",1,job_scam
+"RBI has issued a notice against your account. Share your bank details to avoid penalty.",1,rbi_scam
+"RBI compliance pending on your savings account. Verify account details immediately to continue banking.",1,rbi_scam
+"Your PAN card will be deactivated today. Verify immediately by clicking this link before it is too late.",1,pan_scam
+"PAN verification failed due to mismatch with Aadhaar. Update details now or face account freeze.",1,pan_scam
+"SBI alert: Your account has been locked due to suspicious activity. Call 1800123456 immediately.",1,bank_phishing
+"HDFC Bank notice: Unauthorized transaction of Rs 49876 detected. Verify your identity by sharing OTP.",1,bank_phishing
+"ICICI Bank: Your credit card has been blocked. Call customer care at 022-67124567 to unblock.",1,bank_phishing
+"Get instant personal loan up to Rs 10 lakh without documents. Transfer processing fee of Rs 1499 to apply.",1,loan_scam
+"Pre-approved home loan at 1% interest! No CIBIL check needed. Pay Rs 5000 processing fee now.",1,loan_scam
+"Guaranteed returns of 200% in 30 days! Invest Rs 10000 in our AI trading bot. UPI: getrich@sbi.",1,investment_scam
+"Double your money in 15 days. Our crypto trading platform is SEBI registered. Minimum investment Rs 5000.",1,investment_scam
+"Your electricity bill is overdue. Pay immediately at https://ebill-fake-pay.com or face disconnection.",1,utility_scam
+"BSNL: Your broadband connection will be terminated today. Pay outstanding Rs 876 at the payment link.",1,utility_scam
+"URGENT: Your SIM card will be deactivated in 2 hours due to incomplete KYC. Share Aadhaar photo now.",1,sim_scam
+"Your WhatsApp account has been reported for spam. Verify your identity or your account will be banned.",1,social_scam
+"Instagram verified badge application approved. Pay Rs 4999 fee within 24 hours to activate.",1,social_scam
+"OLX buyer wants to purchase your item. Share UPI ID to receive advance payment of Rs 5000.",1,upi_scam
+"Flipkart lucky draw winner! You have won an iPhone 15. Pay delivery charges of Rs 2999 to claim.",1,prize_scam
+"Amazon gift card winner! Your Rs 50000 Amazon voucher is ready. Pay processing fee of Rs 2499.",1,prize_scam
+"FREE recharge of Rs 699 for all Jio users! Click the link and enter your mobile number.",1,freebie_scam
+"NHAI Fastag KYC incomplete. Your Fastag will be blocked. Recharge Rs 500 to reactivate immediately.",1,fastag_scam
+"PM Kisan Yojana: Your instalment of Rs 6000 is approved. Pay verification fee of Rs 299 to receive funds.",1,government_scam
+"Your debit card will be blocked due to RBI new guidelines. Update your card details now.",1,card_scam
+"IRCTC: Your waitlisted ticket has been confirmed. Pay Rs 250 confirmation charge to receive the ticket.",1,travel_scam
+"Your gas subsidy of Rs 2500 is pending. Verify your bank account by sharing OTP to receive the subsidy.",1,subsidy_scam
+"Free LPG connection under Ujjwala scheme! Pay Rs 500 registration fee. Limited connections available.",1,government_scam
+"Hi Mom, I lost my phone and wallet. Can you urgently send Rs 15000 to this number? Will explain later.",1,family_impersonation
+"Dad, I am in trouble with police. Need Rs 50000 immediately for bail. Send via UPI, don't tell anyone.",1,family_impersonation
+"Grandma, this is your grandson. I had an accident and need money for hospital. Please transfer now.",1,family_impersonation
+"Your Aadhaar has been used to open 5 bank accounts. CBI has registered a case. Verify now.",1,digital_arrest
+"TRAI notice: Your number will be deactivated due to unsolicited messages. Call TRAI office immediately.",1,government_impersonation
+"Enforcement Directorate has frozen your account under PMLA. Pay settlement fee to unfreeze.",1,government_impersonation
+"Supreme Court notice: You have an pending criminal case. Pay fine of Rs 25000 to close the case.",1,government_impersonation
+"Your being investigated by Narcotics Bureau. A parcel with drugs has your name. Cooperate or face jail.",1,digital_arrest
+"This is from Customs Department. A parcel addressed to you contains 500gm of MDMA. Contact us immediately.",1,courier_scam
+"Do not disconnect this call. This is a verified police investigation. Share screen for digital verification.",1,isolation_scam
+"You must stay alone in a room for this CBI interrogation. Do not involve family members.",1,isolation_scam
+"Your bank manager is involved in money laundering. Do not contact the bank directly. We will handle it.",1,isolation_scam
+"Paytm KYC lottery: You have won Rs 100000! To claim, first pay GST of Rs 5000 and processing fee.",1,lottery_scam
+"Google has selected your number for a cash prize of Rs 500000. Send your bank details and Rs 9999 fee.",1,lottery_scam
+"Congratulations from Jio Mart! Your shopping bill is selected for 100% cashback. Pay Rs 299 to activate.",1,prize_scam
+"Hi, are we still meeting for lunch tomorrow at 1pm?",0,legit
+"Can you send me the meeting notes from yesterday's project review?",0,legit
+"Your OTP for login is 482913. Do not share this with anyone.",0,legit
+"Reminder: your electricity bill payment of Rs 2340 is due on the 20th.",0,legit
+"Your Amazon order #402-8912345-6789012 has been shipped and will arrive tomorrow by 9 PM.",0,legit
+"Please review the attached invoice for last month's consulting services before Friday.",0,legit
+"Hey, running late for the dinner tonight. Should reach by 8:30. Save me a seat!",0,legit
+"Your salary for the month of June has been credited to your account. Amount: Rs 58750.",0,legit
+"Meeting rescheduled to 3 PM tomorrow. Please confirm your availability on the calendar invite.",0,legit
+"Mom, can you pick up some vegetables on your way home? Need onions, tomatoes, and coriander.",0,legit
+"Your train ticket PNR 4123456789 has been confirmed. Seat: 2AC, Coach B1, Seat 45.",0,legit
+"Thank you for shopping with us! Your order will be delivered within 3-5 business days.",0,legit
+"Team, the quarterly report deadline has been extended to next Monday. Please plan accordingly.",0,legit
+"Doctor appointment reminder: Dr. Sharma at City Hospital, tomorrow 10:30 AM. Please carry previous reports.",0,legit
+"Happy birthday! Hope you have a wonderful day filled with joy and celebration.",0,legit
+"Your flight 6E-2341 to Mumbai is on time. Boarding starts at 6:15 AM from Gate 14.",0,legit
+"The WiFi password has been changed to 'Office@2024'. Please update on all your devices.",0,legit
+"Can we reschedule our call to 4 PM? Something urgent came up at work.",0,legit
+"Please submit your timesheet for this week before EOD Friday. Finance needs it for processing.",0,legit
+"The building maintenance team will be servicing the AC units on Saturday between 10 AM and 2 PM.",0,legit
+"Your child's parent-teacher meeting is scheduled for next Wednesday at 4 PM. Room 204.",0,legit
+"Reminder: Don't forget to bring the documents for the home loan application tomorrow.",0,legit
+"The car service is complete. You can pick it up anytime before 7 PM. Total cost: Rs 4500.",0,legit
+"Hey, are you free this weekend? We are planning a small get-together at Rohan's place.",0,legit
+"Office will remain closed on Monday for the public holiday. Enjoy the long weekend!",0,legit
+"Your credit card statement for the month is ready. Minimum due: Rs 2500. Pay by the 15th.",0,legit
+"Your subscription to Netflix will renew on the 25th. Amount: Rs 649. Update payment method if needed.",0,legit
+"Library book 'The Design of Everyday Things' is due in 3 days. Please renew or return.",0,legit
+"Gym membership renewal reminder. Your current plan expires in 7 days. Renew to avoid lapse.",0,legit
+"The project demo has been moved to Thursday. Please ensure your slides are ready by Wednesday night.",0,legit
+"Can you please send the client proposal draft by tomorrow morning? I need to review before the 11 AM meeting.",0,legit
+"Lunch order is being placed for the team. Anyone want anything specific from the North Indian place?",0,legit
+"The new intern orientation is at 10 AM in Conference Room A. Mentors please be there by 9:50.",0,legit
+"Received your application for the senior engineer position. We will schedule an interview next week.",0,legit
+"Your Aadhaar update request has been processed successfully. The updated card will arrive in 7-10 days.",0,legit
+"UPI transaction of Rs 890 to Swiggy completed successfully. Available balance: Rs 15,234.50.",0,legit
+"This is your bank's official notification: new debit card dispatched via Speed Post. Tracking: SP123456789IN.",0,legit
+"The gas cylinder booking for June has been confirmed. Delivery expected within 48 hours.",0,legit
+"Your income tax return for FY 2023-24 has been processed. Refund of Rs 12,340 credited to your account.",0,legit
+"New message from your insurance provider: Policy renewal premium of Rs 18,500 due by July 15.",0,legit
+"School bus route 7 will be delayed by 20 minutes tomorrow due to road maintenance work.",0,legit
+"Society meeting notice: AGM scheduled for Sunday at 11 AM in the community hall. Attendance mandatory.",0,legit
+"Your passport application has been verified by the police. Next step: print initiation within 3 days.",0,legit
+"Mutual fund SIP of Rs 5000 has been processed for this month. Next SIP date: July 25.",0,legit
+"Voter ID card has been dispatched to your registered address. Expected delivery: July 10-15.",0,legit
+"Cable TV service will undergo maintenance tonight from 1 AM to 4 AM. Service may be interrupted.",0,legit
+"Water supply will be shut off tomorrow from 9 AM to 5 PM for pipeline maintenance. Store water.",0,legit
+"The office potluck is this Friday! Please add your dish to the shared spreadsheet by Thursday.",0,legit
+"Please don't forget to clock out when leaving. HR has sent a reminder about attendance compliance.",0,legit

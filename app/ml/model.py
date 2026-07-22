@@ -29,6 +29,7 @@ def build_pipeline() -> Pipeline:
             max_iter=1000,
             class_weight="balanced",
             C=2.0,
+            solver="saga",
         )),
     ])
 

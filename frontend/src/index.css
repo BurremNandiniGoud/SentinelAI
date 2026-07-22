@@ -1,0 +1,258 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   SentinelAI Design System — Dark + Light Theme
+   Dark mode is default. Light mode activates via html.light
+   ============================================================ */
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+
+  code, pre, kbd, samp, .font-mono {
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #0B0F17;
+    color: #F3EFE6;
+    font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    font-weight: 400;
+  }
+
+  button, input, textarea, select {
+    font: inherit;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  /* Suppress transitions on WebGL canvas */
+  canvas, video {
+    transition: none !important;
+  }
+}
+
+/* ============================================================
+   Light Mode — CSS Override Layer
+   ============================================================ */
+@layer base {
+  html.light body {
+    background: #F7F5F0;
+    color: #1E232C;
+  }
+
+  /* ---- Backgrounds ---- */
+  html.light .bg-ink-900 { background: #F7F5F0 !important; }
+  html.light .bg-ink-800 { background: #FDFBF8 !important; }
+  html.light .bg-ink-900\/95 { background: rgba(247, 245, 240, 0.95) !important; }
+  html.light .bg-ink-900\/80 { background: rgba(247, 245, 240, 0.8) !important; }
+
+  html.light .bg-ink-800\/40 { background: rgba(242, 239, 232, 0.4) !important; }
+  html.light .bg-ink-800\/50 { background: rgba(242, 239, 232, 0.5) !important; }
+  html.light .bg-ink-800\/60,
+  html.light .bg-ink-800\/70,
+  html.light .bg-ink-800\/80 { background: #FFFFFF !important; }
+
+  html.light .bg-slate-900\/30,
+  html.light .bg-slate-900\/40,
+  html.light .bg-slate-900\/60,
+  html.light .bg-slate-900\/70,
+  html.light .bg-slate-900\/80 { background: #FDFBF8 !important; }
+
+  html.light .bg-slate-950\/50,
+  html.light .bg-slate-950\/60,
+  html.light .bg-slate-950\/70 { background: #F2EFE8 !important; }
+
+  html.light .bg-black { background: #F7F5F0 !important; }
+  html.light .bg-black\/70 { background: rgba(247, 245, 240, 0.7) !important; }
+
+  html.light .bg-ink-700 { background: #EAE6DD !important; }
+
+  /* ---- Text colors ---- */
+  html.light .text-parchment { color: #1E232C !important; }
+  html.light .text-slate-200 { color: #374151 !important; }
+  html.light .text-slate-300 { color: #4B5563 !important; }
+  html.light .text-slate-400 { color: #6B7280 !important; }
+  html.light .text-slate-500 { color: #6B7280 !important; }
+  html.light .text-slate-600 { color: #9CA3AF !important; }
+  html.light .text-slate-950 { color: #111827 !important; }
+  html.light .text-slate-100 { color: #374151 !important; }
+  html.light .text-rose-200 { color: #991B1B !important; }
+  html.light .text-rose-300 { color: #7F1D1D !important; }
+  html.light .text-rose-300\/80 { color: rgba(127, 29, 29, 0.8) !important; }
+  html.light .text-amber-300 { color: #92400E !important; }
+  html.light .text-emerald-300 { color: #065F46 !important; }
+  html.light .text-white { color: #FFFFFF !important; }
+
+  /* ---- Borders ---- */
+  html.light .border-slate-500\/10,
+  html.light .border-slate-500\/15 { border-color: rgba(30, 35, 44, 0.10) !important; }
+  html.light .border-slate-500\/20 { border-color: rgba(30, 35, 44, 0.14) !important; }
+  html.light .border-slate-500\/30 { border-color: rgba(30, 35, 44, 0.18) !important; }
+  html.light .border-slate-500\/40 { border-color: rgba(30, 35, 44, 0.22) !important; }
+  html.light .border-slate-600\/60 { border-color: rgba(30, 35, 44, 0.25) !important; }
+  html.light .border-slate-700 { border-color: rgba(30, 35, 44, 0.18) !important; }
+  html.light .border-slate-700\/40 { border-color: rgba(30, 35, 44, 0.12) !important; }
+
+  html.light .border-rose-400\/25 { border-color: rgba(185, 28, 28, 0.15) !important; }
+  html.light .border-rose-500\/10 { border-color: rgba(185, 28, 28, 0.08) !important; }
+
+  html.light .border-forest\/20 { border-color: rgba(31, 111, 84, 0.15) !important; }
+  html.light .border-forest\/30 { border-color: rgba(31, 111, 84, 0.2) !important; }
+  html.light .border-forest\/40 { border-color: rgba(31, 111, 84, 0.25) !important; }
+
+  html.light .border-brass\/20 { border-color: rgba(23, 55, 94, 0.15) !important; }
+  html.light .border-brass\/30 { border-color: rgba(23, 55, 94, 0.2) !important; }
+
+  html.light .border-oxblood\/20 { border-color: rgba(122, 31, 43, 0.12) !important; }
+  html.light .border-oxblood\/30 { border-color: rgba(122, 31, 43, 0.18) !important; }
+  html.light .border-oxblood\/40 { border-color: rgba(122, 31, 43, 0.22) !important; }
+  html.light .border-oxblood\/60 { border-color: rgba(122, 31, 43, 0.35) !important; }
+
+  html.light .border-ochre\/20 { border-color: rgba(184, 134, 46, 0.15) !important; }
+  html.light .border-ochre\/30 { border-color: rgba(184, 134, 46, 0.2) !important; }
+  html.light .border-ochre\/60 { border-color: rgba(184, 134, 46, 0.35) !important; }
+
+  /* ---- Shadows ---- */
+  html.light .shadow-soft { box-shadow: 0 8px 30px rgba(20, 20, 20, 0.05) !important; }
+
+  /* ---- Hover states ---- */
+  html.light .hover\:bg-slate-800:hover,
+  html.light .hover\:bg-slate-800\/50:hover { background: rgba(30, 35, 44, 0.04) !important; }
+  html.light .hover\:bg-ink-700:hover { background: rgba(30, 35, 44, 0.05) !important; }
+  html.light .hover\:bg-slate-900\/30:hover { background: rgba(30, 35, 44, 0.03) !important; }
+  html.light .hover\:bg-slate-300:hover { background: rgba(30, 35, 44, 0.06) !important; }
+
+  html.light .hover\:border-brass:hover { border-color: #17375E !important; }
+  html.light .hover\:border-brass\/40:hover { border-color: rgba(23, 55, 94, 0.3) !important; }
+  html.light .hover\:border-slate-400\/60:hover { border-color: rgba(30, 35, 44, 0.2) !important; }
+  html.light .hover\:border-slate-500\/30:hover { border-color: rgba(30, 35, 44, 0.12) !important; }
+
+  html.light .hover\:text-parchment:hover { color: #1E232C !important; }
+  html.light .hover\:text-slate-400:hover { color: #4B5563 !important; }
+  html.light .hover\:text-white:hover { color: #1E232C !important; }
+
+  /* ---- Focus states ---- */
+  html.light .focus\:border-brass\/40:focus { border-color: rgba(23, 55, 94, 0.3) !important; }
+  html.light .focus\:border-slate-400\/70:focus { border-color: rgba(23, 55, 94, 0.4) !important; }
+  html.light .focus\:ring-slate-500\/20:focus { ring-color: rgba(23, 55, 94, 0.15) !important; }
+
+  /* ---- Link / accent overrides ---- */
+  html.light .text-brass { color: #17375E !important; }
+  html.light .text-brass\/60 { color: rgba(23, 55, 94, 0.6) !important; }
+  html.light .bg-brass { background: #17375E !important; }
+  html.light .bg-brass\/5 { background: rgba(23, 55, 94, 0.05) !important; }
+  html.light .bg-brass\/10 { background: rgba(23, 55, 94, 0.1) !important; }
+  html.light .bg-brass\/20 { background: rgba(23, 55, 94, 0.2) !important; }
+  html.light .hover\:bg-brass\/90:hover { background: #224B7A !important; }
+
+  html.light .text-forest { color: #1F6F54 !important; }
+  html.light .bg-forest { background: #1F6F54 !important; }
+  html.light .bg-forest\/5 { background: rgba(31, 111, 84, 0.05) !important; }
+  html.light .bg-forest\/10 { background: rgba(31, 111, 84, 0.1) !important; }
+  html.light .bg-forest\/20 { background: rgba(31, 111, 84, 0.15) !important; }
+  html.light .hover\:bg-forest\/90:hover { background: #1A5E47 !important; }
+  html.light .hover\:bg-emerald-400:hover { background: #059669 !important; }
+
+  html.light .text-oxblood { color: #7A1F2B !important; }
+  html.light .text-oxblood\/80 { color: rgba(122, 31, 43, 0.8) !important; }
+  html.light .bg-oxblood { background: #7A1F2B !important; }
+  html.light .bg-oxblood\/5 { background: rgba(122, 31, 43, 0.05) !important; }
+  html.light .bg-oxblood\/10 { background: rgba(122, 31, 43, 0.1) !important; }
+  html.light .bg-oxblood\/20 { background: rgba(122, 31, 43, 0.12) !important; }
+  html.light .hover\:bg-oxblood\/10:hover { background: rgba(122, 31, 43, 0.08) !important; }
+
+  html.light .text-ochre { color: #B8862E !important; }
+  html.light .bg-ochre\/10 { background: rgba(184, 134, 46, 0.1) !important; }
+  html.light .bg-ochre\/20 { background: rgba(184, 134, 46, 0.15) !important; }
+
+  html.light .text-rose-400 { color: #DC2626 !important; }
+  html.light .bg-rose-500 { background: #DC2626 !important; }
+  html.light .bg-rose-500\/5 { background: rgba(220, 38, 38, 0.05) !important; }
+  html.light .hover\:bg-rose-400:hover { background: #EF4444 !important; }
+
+  html.light .bg-emerald-500 { background: #059669 !important; }
+  html.light .hover\:bg-emerald-400:hover { background: #10B981 !important; }
+
+  /* ---- bg-slate-100 (used on buttons) ---- */
+  html.light .bg-slate-100 { background: #17375E !important; color: #FFFFFF !important; }
+  html.light .hover\:bg-white:hover { background: #224B7A !important; color: #FFFFFF !important; }
+
+  /* ---- bg-slate-200/90 ---- */
+  html.light .bg-slate-200\/90 { background: rgba(30, 35, 44, 0.06) !important; }
+
+  /* ---- text-ink-900 (used for button text on light backgrounds) ---- */
+  html.light .text-ink-900 { color: #FFFFFF !important; }
+
+  /* ---- Placeholder overrides ---- */
+  html.light .placeholder\:text-slate-600::placeholder { color: #9CA3AF !important; }
+
+  /* ---- Divider overrides ---- */
+  html.light .divide-slate-700 > * + * { border-color: rgba(30, 35, 44, 0.08) !important; }
+  html.light .divide-slate-500\/10 > * + * { border-color: rgba(30, 35, 44, 0.08) !important; }
+
+  /* ---- Ring/outline overrides ---- */
+  html.light .ring-brass { --tw-ring-color: #17375E !important; }
+  html.light .focus-visible\:ring-brass:focus-visible { --tw-ring-color: #17375E !important; }
+  html.light .focus-visible\:ring-offset-ink-900:focus-visible { --tw-ring-offset-color: #F7F5F0 !important; }
+
+  /* ---- Gradient overrides ---- */
+  html.light .from-ink-800 { --tw-gradient-from: #FDFBF8 !important; }
+  html.light .to-ink-900 { --tw-gradient-to: #F7F5F0 !important; }
+  html.light .bg-gradient-to-br { background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)) !important; }
+}
+
+/* ============================================================
+   Theme Transition — Smooth 350ms on color-aware properties
+   ============================================================ */
+@layer utilities {
+  html.light body,
+  html.light body * {
+    transition: background-color 0.35s ease, color 0.35s ease,
+                border-color 0.35s ease, box-shadow 0.35s ease,
+                fill 0.35s ease, stroke 0.35s ease !important;
+  }
+  /* Exception: no transition on canvas/video/animations */
+  html.light canvas,
+  html.light video,
+  html.light [class*="animate-"],
+  html.light .motion-safe\:transition-none {
+    transition: none !important;
+  }
+}
+
+/* ============================================================
+   Component Utility Classes
+   ============================================================ */
+@layer components {
+  .heading-display {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .data-value {
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}

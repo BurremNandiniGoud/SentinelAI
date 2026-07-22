@@ -17,7 +17,8 @@ import tempfile
 
 import cv2
 import numpy as np
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from pathlib import Path
@@ -28,11 +29,20 @@ from app.ml.model import FraudClassifier
 from app.risk_engine.scoring import compute_risk
 from app.currency_detection.inference import CurrencyDetectionInference
 from app.currency_detection.live_pipeline import LiveCurrencyTracker
+from app.api.db import record_scan, get_scan_history, get_latest_alerts, get_latest_news, seed_alerts_and_news
 
 app = FastAPI(
     title="AI Fraud Detection & Currency Detection Engine",
     description="Multimodal fraud & counterfeit currency detection API",
     version="0.2.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 classifier = FraudClassifier()
@@ -67,6 +77,18 @@ class CurrencyDetectionResponse(BaseModel):
     recommendation: str
     details: dict
     bbox: list | None = None
+
+
+class CurrencyAnalyzeResponse(BaseModel):
+    verdict: str
+    confidence: float
+    authentic_probability: float
+    counterfeit_probability: float
+    recommendation: str
+
+
+class MessageAnalyzeResponse(AnalysisResponse):
+    pass
 
 
 def analyze_text(raw_text: str) -> AnalysisResponse:
@@ -114,7 +136,32 @@ def root():
 
 @app.post("/predict", response_model=AnalysisResponse)
 def predict_text(payload: TextRequest):
-    return analyze_text(payload.text)
+    result = analyze_text(payload.text)
+    record_scan(
+        scan_type="message",
+        source=payload.channel,
+        verdict=None,
+        threat_level=result.threat_level,
+        confidence=float(result.fraud_probability),
+        payload={"text": payload.text, "channel": payload.channel},
+        result=result.model_dump(),
+    )
+    return result
+
+
+@app.post("/api/message/analyze", response_model=MessageAnalyzeResponse)
+def api_message_analyze(payload: TextRequest):
+    result = analyze_text(payload.text)
+    record_scan(
+        scan_type="message",
+        source=payload.channel,
+        verdict=None,
+        threat_level=result.threat_level,
+        confidence=float(result.fraud_probability),
+        payload={"text": payload.text, "channel": payload.channel},
+        result=result.model_dump(),
+    )
+    return result
 
 
 @app.post("/predict/image", response_model=AnalysisResponse)
@@ -130,7 +177,45 @@ async def predict_image(file: UploadFile = File(...)):
         tmp_path = tmp.name
     try:
         text = extract_text_from_image(tmp_path)
-        return analyze_text(text)
+        result = analyze_text(text)
+        record_scan(
+            scan_type="message",
+            source="image",
+            verdict=None,
+            threat_level=result.threat_level,
+            confidence=float(result.fraud_probability),
+            payload={"filename": file.filename},
+            result=result.model_dump(),
+        )
+        return result
+    finally:
+        os.remove(tmp_path)
+
+
+@app.post("/api/message/analyze/image", response_model=MessageAnalyzeResponse)
+async def api_message_image_analyze(file: UploadFile = File(...)):
+    try:
+        from app.ocr.extract import extract_text_from_image
+    except ModuleNotFoundError as exc:
+        raise HTTPException(status_code=500, detail="OCR dependencies are not installed.") from exc
+
+    suffix = os.path.splitext(file.filename)[1] or ".png"
+    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+        shutil.copyfileobj(file.file, tmp)
+        tmp_path = tmp.name
+    try:
+        text = extract_text_from_image(tmp_path)
+        result = analyze_text(text)
+        record_scan(
+            scan_type="message",
+            source="image",
+            verdict=None,
+            threat_level=result.threat_level,
+            confidence=float(result.fraud_probability),
+            payload={"filename": file.filename},
+            result=result.model_dump(),
+        )
+        return result
     finally:
         os.remove(tmp_path)
 
@@ -147,7 +232,17 @@ async def predict_pdf(file: UploadFile = File(...)):
         tmp_path = tmp.name
     try:
         text = extract_text_from_pdf(tmp_path)
-        return analyze_text(text)
+        result = analyze_text(text)
+        record_scan(
+            scan_type="message",
+            source="pdf",
+            verdict=None,
+            threat_level=result.threat_level,
+            confidence=float(result.fraud_probability),
+            payload={"filename": file.filename},
+            result=result.model_dump(),
+        )
+        return result
     finally:
         os.remove(tmp_path)
 
@@ -176,7 +271,7 @@ async def predict_currency_live(file: UploadFile = File(...)):
             if is_fake
             else 'Currency appears authentic'
         ) if label != 'NO NOTE' else 'No currency note detected. Position the note clearly in the frame.'
-        return {
+        result_payload = {
             'status': 'success',
             'currency_status': label,
             'fake_probability': float(fake_prob),
@@ -195,6 +290,16 @@ async def predict_currency_live(file: UploadFile = File(...)):
             },
             'bbox': list(bbox) if bbox is not None else None,
         }
+        record_scan(
+            scan_type="currency_live",
+            source="webcam",
+            verdict=label,
+            threat_level=None,
+            confidence=confidence_pct,
+            payload={"frame_name": file.filename},
+            result=result_payload,
+        )
+        return result_payload
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
 
@@ -226,7 +331,7 @@ async def predict_currency(file: UploadFile = File(...)):
             if is_fake
             else 'Currency appears authentic'
         ) if label != 'NO NOTE' else 'No currency note detected. Position the note clearly in the frame.'
-        return CurrencyDetectionResponse(
+        response = CurrencyDetectionResponse(
             status='success',
             currency_status=label,
             fake_probability=float(fake_prob),
@@ -244,5 +349,121 @@ async def predict_currency(file: UploadFile = File(...)):
             },
             bbox=list(bbox) if bbox is not None else None,
         )
+        record_scan(
+            scan_type="currency_upload",
+            source="image",
+            verdict=response.currency_status,
+            threat_level=None,
+            confidence=response.confidence_percentage,
+            payload={"filename": file.filename},
+            result=response.model_dump(),
+        )
+        return response
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.post("/api/currency/analyze", response_model=CurrencyAnalyzeResponse)
+async def api_currency_analyze(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
+        raise HTTPException(status_code=400, detail='Invalid file type. Please upload JPEG or PNG image.')
+
+    contents = await file.read()
+    if not contents:
+        raise HTTPException(status_code=400, detail='Empty image received.')
+
+    suffix = os.path.splitext(file.filename)[1] or '.png'
+    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+        tmp.write(contents)
+        tmp_path = tmp.name
+    try:
+        inference = currency_detector.predict(tmp_path)
+    finally:
+        os.remove(tmp_path)
+
+    if inference.get('status') != 'success':
+        raise HTTPException(status_code=500, detail=inference.get('message', 'Currency analysis failed.'))
+
+    verdict = inference['currency_status']
+    auth_prob = float(inference['real_probability'])
+    counter_prob = float(inference['fake_probability'])
+    confidence = float(inference['confidence_percentage'])
+    result_payload = {
+        'verdict': verdict,
+        'confidence': confidence,
+        'authentic_probability': auth_prob * 100.0 if auth_prob <= 1 else auth_prob,
+        'counterfeit_probability': counter_prob * 100.0 if counter_prob <= 1 else counter_prob,
+        'recommendation': inference['recommendation'],
+    }
+    record_scan(
+        scan_type='currency_upload',
+        source='image',
+        verdict=verdict,
+        threat_level=None,
+        confidence=confidence,
+        payload={'filename': file.filename},
+        result=result_payload,
+    )
+    return result_payload
+
+
+@app.websocket("/api/currency/live")
+async def websocket_currency_live(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            data = await websocket.receive_bytes()
+            frame_array = np.frombuffer(data, dtype=np.uint8)
+            frame = cv2.imdecode(frame_array, cv2.IMREAD_COLOR)
+            if frame is None:
+                await websocket.send_json({"error": "Could not decode frame."})
+                continue
+            try:
+                _, bbox, label, confidence, fake_prob, real_prob = live_currency_tracker.process_frame(frame)
+                confidence_pct = float(confidence * 100)
+                recommendation = (
+                    'DO NOT ACCEPT - Currency appears to be counterfeit'
+                    if fake_prob > real_prob
+                    else 'Currency appears authentic'
+                ) if label != 'NO NOTE' else 'No currency note detected. Position the note clearly in the frame.'
+                response_payload = {
+                    'verdict': label,
+                    'confidence': confidence_pct,
+                    'authentic_probability': float(real_prob) * 100.0,
+                    'counterfeit_probability': float(fake_prob) * 100.0,
+                    'recommendation': recommendation,
+                }
+                record_scan(
+                    scan_type="currency_live",
+                    source="websocket",
+                    verdict=label,
+                    threat_level=None,
+                    confidence=confidence_pct,
+                    payload={},
+                    result=response_payload,
+                )
+                await websocket.send_json(response_payload)
+            except Exception as exc:
+                await websocket.send_json({"error": str(exc)})
+    except WebSocketDisconnect:
+        return
+
+
+@app.get("/api/analytics")
+def api_analytics(limit: int = 200, scan_type: str | None = None):
+    return {"history": get_scan_history(limit=limit, scan_type=scan_type)}
+
+
+@app.get("/api/alerts")
+def api_alerts(limit: int = 10):
+    return {"alerts": get_latest_alerts(limit)}
+
+
+@app.get("/api/news")
+def api_news(limit: int = 10):
+    return {"news": get_latest_news(limit)}
+
+
+@app.on_event("startup")
+def on_startup():
+    seed_alerts_and_news()
