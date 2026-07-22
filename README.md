@@ -1,8 +1,3 @@
-<p align="center">
-  <img src="https://img.shields.io/badge/AI-Powered_Public_Safety-Platform-brass?style=for-the-badge" alt="AI-Powered Public Safety Platform" />
-  <img src="https://img.shields.io/badge/Hackathon-Winning_Build-green?style=for-the-badge" alt="Hackathon Build" />
-</p>
-
 <h1 align="center">🛡️ SentinelAI</h1>
 
 <p align="center">
@@ -414,13 +409,6 @@ docker run -p 8000:8000 sentinelai
 
 Features requiring additional model training — out of hackathon scope but architecturally planned:
 
-- **Live Call Detection:** Voice + script + cadence classification for digital arrest calls
-- **Deepfake Detection:** AI-generated voice and video identification
-- **Fraud Network Graph:** Graph neural network linking phones, UPI IDs, accounts across jurisdiction
-- **Geospatial Prediction:** Predictive hotspot mapping for proactive patrol deployment
-- **WhatsApp Bot:** Conversational AI for citizen fraud assessment via messaging
-- **Multilingual Support:** 12 Indian language scam detection and advisory
-- **Evidence Packaging:** Court-admissible chain-of-custody reports with cryptographic signing
 
 ---
 
