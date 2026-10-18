@@ -9,7 +9,7 @@ python-multipart==0.0.9
 
 # Deep Learning & Computer Vision (Currency Detection)
 tensorflow==2.15.0
-keras==3.0.5
+keras==2.15.0
 pillow==10.1.0
 opencv-python==4.8.1.78
 matplotlib==3.8.2
